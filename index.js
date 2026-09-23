@@ -8,8 +8,11 @@ import authRoutes from "./routes/authRoutes.js";
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-const PORT = process.env.PORT;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 const CLIENT_URL = "https://spicererp.netlify.app";
 
@@ -59,19 +62,14 @@ const startServer = async () => {
   try {
     await connectDB();
 
-    if (!PORT) {
-      throw new Error("PORT environment variable is not defined.");
-    }
+    const PORT = process.env.PORT || 5000;
 
-    app.listen(PORT, () => {
-      console.log("Spicer backend started successfully.");
-      console.log(`Server listening on port ${PORT}`);
-      console.log(`CORS allowed origin: ${CLIENT_URL}`);
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on port ${PORT}`);
     });
   } catch (error) {
     console.error("Failed to start server.");
     console.error(error.message);
-
     process.exit(1);
   }
 };
