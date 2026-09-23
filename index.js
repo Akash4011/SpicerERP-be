@@ -10,7 +10,11 @@ dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 5000;
-const CLIENT_URL = process.env.CLIENT_URL || "https://spicererp.netlify.app";
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://spicererp.netlify.app"
+];
 
 // ------------------------------------
 // Middleware
@@ -18,11 +22,21 @@ const CLIENT_URL = process.env.CLIENT_URL || "https://spicererp.netlify.app";
 
 app.use(
   cors({
-    origin: CLIENT_URL
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    }
   })
 );
 
 app.use(express.json());
+
+// ------------------------------------
+// Root route
+// ------------------------------------
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -55,8 +69,9 @@ const startServer = async () => {
     await connectDB();
 
     app.listen(PORT, () => {
-      console.log(`Backend  on http://localhost:${PORT}`);
-      console.log(`Frontend allowed by CORS: ${CLIENT_URL}`);
+      console.log(`Backend on http://localhost:${PORT}`);
+      console.log("Allowed frontend origins:");
+      console.log(allowedOrigins);
     });
   } catch (error) {
     console.error("Failed to start server.");
@@ -67,6 +82,3 @@ const startServer = async () => {
 };
 
 startServer();
-
-
-// github is tested
