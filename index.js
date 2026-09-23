@@ -9,6 +9,8 @@ dotenv.config();
 
 const app = express();
 
+const PORT = process.env.PORT;
+
 const CLIENT_URL = "https://spicererp.netlify.app";
 
 // ------------------------------------
@@ -57,9 +59,13 @@ const startServer = async () => {
   try {
     await connectDB();
 
+    if (!PORT) {
+      throw new Error("PORT environment variable is not defined.");
+    }
+
     app.listen(PORT, () => {
       console.log("Spicer backend started successfully.");
-      console.log(`Port: ${PORT}`);
+      console.log(`Server listening on port ${PORT}`);
       console.log(`CORS allowed origin: ${CLIENT_URL}`);
     });
   } catch (error) {
