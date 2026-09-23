@@ -11,10 +11,7 @@ const app = express();
 
 const PORT = process.env.PORT || 5000;
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://spicererp.netlify.app"
-];
+const CLIENT_URL = "https://spicererp.netlify.app";
 
 // ------------------------------------
 // Middleware
@@ -22,13 +19,7 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    }
+    origin: CLIENT_URL
   })
 );
 
@@ -69,9 +60,9 @@ const startServer = async () => {
     await connectDB();
 
     app.listen(PORT, () => {
-      console.log(`Backend on http://localhost:${PORT}`);
-      console.log("Allowed frontend origins:");
-      console.log(allowedOrigins);
+      console.log("Spicer backend started successfully.");
+      console.log(`Port: ${PORT}`);
+      console.log(`CORS allowed origin: ${CLIENT_URL}`);
     });
   } catch (error) {
     console.error("Failed to start server.");
